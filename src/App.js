@@ -1,24 +1,35 @@
-import React, { Component } from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { Component } from "react";
+
+import "./App.css";
 
 class App extends Component {
+  state = {
+    chickens: [],
+    loading: true
+  };
+
+  componentDidMount() {
+    fetch("/api/chickens")
+      .then(res => res.json())
+      .then(chickens => {
+        this.setState({ chickens, loading: false });
+      })
+      .catch(err => console.log(err));
+  }
   render() {
     return (
       <div className="App">
         <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
+          <h1>Chickens</h1>
+          {this.state.loading === false ? (
+            this.state.chickens.map(chicken => (
+              <div key={chicken._id}>
+                {chicken.name} - {chicken.breed}
+              </div>
+            ))
+          ) : (
+            <div>loading</div>
+          )}
         </header>
       </div>
     );
